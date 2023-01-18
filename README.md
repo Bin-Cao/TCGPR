@@ -112,9 +112,9 @@ normalize_y : boolean, optional (default: False)
 ```
 
 output : 
-+ Dataset remained by TCGPR.csv contains the outliers
++ [Dataset remained by TCGPR.csv] contains the outliers
 
-## Update log / 日志
+## Update log 
 TCLR V1.0 Jan, 2023. 
 *official release version*
 
