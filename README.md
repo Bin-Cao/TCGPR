@@ -1,7 +1,8 @@
 
 Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/TCGPR/)
 # TCGPR package 
-log
+![Screenshot 2023-01-18 at 17 51 06](https://user-images.githubusercontent.com/86995074/213139627-d966b778-9a66-4877-8776-77e112a0bb82.png)
+
 
 ## TCGPR, Version 1, April, 2022.
 
