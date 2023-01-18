@@ -25,7 +25,7 @@ Written using Python, which is suitable for operating systems, e.g., Windows/Lin
 
 ``` javascript
 #coding=utf-8
-import TCGPR
+from TCGPR import TCGPR
 dataSet = "data1.csv"
 initial_set_cap = 3
 sampling_cap =2
