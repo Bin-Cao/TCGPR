@@ -21,7 +21,7 @@ Written using Python, which is suitable for operating systems, e.g., Windows/Lin
     pip install --upgrade TCGPR
 
 ## Running / 运行
-    [Template](https://github.com/Bin-Cao/TCGPR/tree/main/Intro)
+See [Template](https://github.com/Bin-Cao/TCGPR/tree/main/Template)
     
 ## output : 
 + [Dataset remained by TCGPR.csv]
