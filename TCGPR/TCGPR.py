@@ -1,34 +1,106 @@
+# coding = UTF-8
 
-import TCGPRfun
+from . import TCGPRdata
+from . import TCGPRfeature
+from . import TCGPRdata_r
 import pandas as pd
 
-def fit(filePath, initial_set_cap=3, sampling_cap=1, ratio=0.1, up_search = 2e2, exploit_coef=2,Self_call = True, alpha=1e-10, n_restarts_optimizer=10,
-          normalize_y=True, exploit_model = False, ):
+# =============================================================================
+# Public estimators
+# =============================================================================
+
+
+def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sampling_cap=1, ratio=0.1, target=1,up_search = 2e2, exploit_coef=2,Self_call = True, exploit_model = False, alpha=1e-10, n_restarts_optimizer=10,
+          normalize_y=True,  ):
 
     """
     Algorithm name: Tree classifier for gaussian process regression
-    23 April 2022, version 1, Bin Cao, MGI, SHU, Shanghai, CHINA.
+    outliers detection, features selection
 
-    log: Jun 16 2022 add note
+    ==================================================================
+    Please feel free to open issues in the Github :
+    https://github.com/Bin-Cao/TCGPR
+    or 
+    contact Bin Cao (bcao@shu.edu.cn)
+    in case of any problems/comments/suggestions in using the code. 
+    ==================================================================
 
-    :param filePath: the input dataset in csv
+    ==================================================================
+    encode log: 
+        March 14 2022 first version for data screening / Bin CAO
+        Jun 16 2022 add note / Bin CAO
+        Jan 12 2023 revise code framework / Bin CAO
+        Jan 19 2023 supplement feature selection function / Bin CAO
+    ==================================================================
 
-    :param initial_set_cap: the initial dataset capacity, default = 3, recommend = 3-10
-            or a list : i.e.,  
-            [3,4,8], means the 4-th, 5-th, 9-th datum will be collected as the initial dataset
+    Parameters
+    ----------
+    :param defined in TCGPR
+    ==================================================================
+    :param Mission : str, the mission of TCGPR, 
+        default Mission = 'DATA' for data screening. 
+        Mission = 'FEATURE' for feature selection.
 
-    :param sampling_cap: the number of data added to the updating dataset at each iteration, default = 1, recommend = 1-5
+    :param filePath: the input dataset in csv format
 
-    :param ratio: tolerance, lower boundary of R is (1-ratio)Rmax, default = 0.1, recommend = 0-0.3
+    :param initial_set_cap: 
+    + for Mission = 'DATA':
+    ++ if Sequence = 'forward':
+        initial_set_cap : the capacity of the initial dataset
+        int, default = 3, recommend = 3-10
+        or a list : i.e.,  
+        [3,4,8], means the 4-th, 5-th, 9-th datum will be collected as the initial dataset
+    ++ elif Sequence = 'backward':
+        param initial_set_cap is masked 
+    + for Mission = 'FEATURE':
+        initial_set_cap : the capacity of the initial featureset
+        int, default = 1, recommend = 1-5
+        or a list : i.e.,  
+        [3,4,8], means the 4-th, 5-th, 9-th feature will be selected as the initial characterize
 
-    :param up_search: up boundary of candidates for brute force search, default = 2e2 , recommend =  2e2-2e4
+    :param sampling_cap: 
+    + for Mission = 'DATA':
+        int, the number of data added to the updating dataset at each iteration, default = 1, recommend = 1-5
+    + for Mission = 'FEATURE':
+        int, the number of features added to the updating feature set at each iteration, default = 1, recommend = 1-3
 
-    :param exploit_coef: constrains to the magnitude of variance in Cal_EI function,default = 2, recommend = 2
+    :param ratio: 
+    + for Mission = 'DATA':
+    ++ if Sequence = 'forward':
+        tolerance, lower boundary of R is (1-ratio)Rmax, default = 0.1, recommend = 0-0.3
+    ++ elif Sequence = 'backward':
+        tolerance, lower boundary of R is (1+ratio)R[last], default = 0.1, recommend = 0.001-0.05
+    + for Mission = 'FEATURE':
+        tolerance, lower boundary of R is (1+ratio)R[last], default = 0.1, recommend = 0.001-0.05
 
-    :param Self_call: the calculation model of TCGPR, default = True, if Self_call=True, TCGPR will be executed repeatedly on the remained dataset. 
+    :param target:
+    used in feature selection when Mission = 'FEATURE'
+        int, default 1, the number of target in regression mission
+        target = 1 for single_task regression and =k for k_task regression (Multiobjective regression)
+    otherwise : param target is masked 
     
-    :param defined in Gpr
-    alpha : float or array-like of shape (n_samples), default=1e-10
+    :param up_search: 
+    + for Mission = 'DATA':
+        up boundary of candidates for brute force search, default = 2e2 , recommend =  2e2-2e4
+    + for Mission = 'FEATURE':
+        up boundary of candidates for brute force search, default = 20 , recommend =  10-2e2
+
+    :param exploit_coef: constrains to the magnitude of variance in Cal_EI function, default = 2, recommend = 2
+
+    :param Self_call: 
+    + for Mission = 'DATA':
+    ++ if Sequence = 'forward':
+        the calculation model of TCGPR, default = True, 
+        Self_call=True, TCGPR will be executed repeatedly on the remained dataset. 
+    ++ elif Sequence = 'backward': Self_call is masked
+    + for Mission = 'FEATURE': Self_call is masked
+
+    :param exploit_model: boolean, default, False
+        exploit_model == True, the searching direction will be R only! GGMF will not be used!
+
+    :param defined in Gpr of sklearn package
+    ==================================================================
+    [sklearn]alpha : float or array-like of shape (n_samples), default=1e-10
             Value added to the diagonal of the kernel matrix during fitting.
             Larger values correspond to increased noise level in the observations.
             This can also prevent a potential numerical issue during fitting, by
@@ -39,7 +111,7 @@ def fit(filePath, initial_set_cap=3, sampling_cap=1, ratio=0.1, up_search = 2e2,
             Allowing to specify the noise level directly as a parameter is mainly
             for convenience and for consistency with Ridge.
 
-    optimizer : "fmin_l_bfgs_b" or callable, default="fmin_l_bfgs_b"
+    [sklearn]optimizer : "fmin_l_bfgs_b" or callable, default="fmin_l_bfgs_b"
             Can either be one of the internally supported optimizers for optimizing
             the kernel's parameters, specified by a string, or an externally
             defined optimizer passed as a callable. If a callable is passed, it
@@ -64,7 +136,7 @@ def fit(filePath, initial_set_cap=3, sampling_cap=1, ratio=0.1, up_search = 2e2,
 
                 'fmin_l_bfgs_b'
 
-    n_restarts_optimizer : int, default=10
+    [sklearn]n_restarts_optimizer : int, default=10
             The number of restarts of the optimizer for finding the kernel's
             parameters which maximize the log-marginal likelihood. The first run
             of the optimizer is performed from the kernel's initial parameters,
@@ -73,43 +145,111 @@ def fit(filePath, initial_set_cap=3, sampling_cap=1, ratio=0.1, up_search = 2e2,
             must be finite. Note that n_restarts_optimizer == 0 implies that one
             run is performed.
 
-    normalize_y : boolean, optional (default: False)
+    [sklearn]normalize_y : boolean, optional (default: False)
             Whether the target values y are normalized, the mean and variance of
             the target values are set equal to 0 and 1 respectively. This is
             recommended for cases where zero-mean, unit-variance priors are used.
             Note that, in this implementation, the normalisation is reversed
             before the GP predictions are reported.
 
-    :param exploit_model: boolean,(default: False)
-            if exploit_model == True, the searching direction will be R only! GGMF will not be used!
+    :return: datasets
 
-    :return: two datasets in form of .csv 
-    """
-    print(' The first execution of TCGPR')
-    TCGPRfun.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
-         alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
-    print('One conherenced dataset has been saved !')
-    print('='*100)
-
-      
-    if Self_call == True:
-        print('Self_call is True, the remianed data will be screened by TCGPR')
-        Num = 0
-        while True:
-            Num += 1 
-            print('The {num}-th execution of TCGPR'.format(num = Num))
-            data = pd.read_csv('Dataset remained by TCGPR.csv')
-            if len(data.iloc[:,0]) < initial_set_cap:
-                print('The outliers have been detected ')
-                break
-            else:
-                try:
-                    TCGPRfun.cal_TCGPR(filePath="Dataset remained by TCGPR.csv", initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
-                        alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
-                except:
-                    break
-    else:
-        pass
-
-
+    Examples
+    --------
+    import pandas as pd
+    for Mission = 'DATA':
+    ++ if Sequence = 'forward':
+        #coding=utf-8
+        from TCGPR import TCGPR
+        dataSet = "data.csv"
+        initial_set_cap = 3
+        sampling_cap =2
+        ratio = 0.2
+        up_search = 500
+        TCGPR.fit(
+            filePath = dataSet, initial_set_cap = initial_set_cap, sampling_cap = sampling_cap,
+            ratio = ratio, up_search = up_search
+                )
+        note: default setting of Mission = 'DATA', No need to declare
+    ++ elif Sequence = 'backward':
+        #coding=utf-8
+        from TCGPR import TCGPR
+        dataSet = "data.csv"
+        initial_set_cap = 3
+        sampling_cap =2
+        ratio = 0.001 # recommend a small float value
+        up_search = 500
+        TCGPR.fit(
+            filePath = dataSet, Sequence = 'backward', sampling_cap = sampling_cap,
+            ratio = ratio, up_search = up_search
+                )
+        note: default setting of Mission = 'DATA', No need to declare; initial_set_cap is masked 
+    + for Mission = 'FEATURE': 
+        #coding=utf-8
+        from TCGPR import TCGPR
+        dataSet = "data.csv"
+        sampling_cap =2
+        ratio = 0.001 # recommend a small float value
+        up_search = 500
+        TCGPR.fit(
+            filePath = dataSet, Mission = 'FEATURE', initial_set_cap = initial_set_cap, sampling_cap = sampling_cap,
+            ratio = ratio, up_search = up_search
+                )
+        note: for feature selection, Mission should be declared as  Mission = 'FEATURE' ! 
     
+    References
+    ----------
+    .. [1] https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf
+
+    .. [2] Software copyright : Zhang Tong-yi, Cao Bin, Sun Sheng. 
+        Tree-Classifier for Gaussian Process Regression. 
+        2022SR1423038 (2022)
+    
+    .. [3] Patent : Zhang Tong-yi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. 
+        Tree-Classifier for Gaussian Process Regression. (一种高斯过程回归树分类器多元合金异常数据识别方法) 
+        CN 115017977 A(2022)
+    """
+
+    if Mission == 'DATA':
+        if Sequence == 'forward':
+            print(' The first execution of TCGPR : Data screening ; forward version')
+            TCGPRdata.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
+                alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+            print('One conherenced dataset has been saved !')
+            print('='*100)
+
+            
+            if Self_call == True:
+                print('Self_call is True, the remianed data will be screened by TCGPR')
+                Num = 0
+                while True:
+                    Num += 1 
+                    print('The {num}-th execution of TCGPR'.format(num = Num))
+                    data = pd.read_csv('Dataset remained by TCGPR.csv')
+                    if len(data.iloc[:,0]) < initial_set_cap:
+                        print('The outliers have been detected ')
+                        break
+                    else:
+                        try:
+                            TCGPRdata.cal_TCGPR(filePath="Dataset remained by TCGPR.csv", initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
+                                alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+                        except:
+                            break
+            else:
+                pass
+        elif Sequence == 'backward':
+            print('Modle Data screening of backward searching is executed : param initial_set_cap is masked ')
+            print('The first execution of TCGPR : Data screening; backward version')
+            TCGPRdata_r.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
+                alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+            print('One conherenced dataset has been saved !')
+            print('='*100)
+
+    if Mission == 'FEATURE':
+        print('The first execution of TCGPR : Feature selection')
+        TCGPRfeature.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, target = target, exploit_coef=exploit_coef,
+            alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+        print('One conherenced dataset with selected features has been saved !')
+        print('='*100)
+
+        
