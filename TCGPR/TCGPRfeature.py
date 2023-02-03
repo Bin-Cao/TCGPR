@@ -180,7 +180,7 @@ def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.1, up_search 
             Rvalue_set.append(Rvalue)
             uncer_set.append(np.array(y_std_set).mean())
             # loss, the lower the better
-            GGMF_set.append(GGMF_ini[0])
+            GGMF_set.append(GGMF_ini)
 
         uncer_array = np.array(uncer_set)
         GGMF_array = np.array(GGMF_set)
@@ -383,24 +383,28 @@ def complate_dataset(dataset,response,response_name):
     return dataset
 
 # define the function for calculating 1-R value
-def PearsonR(X, Y):
-    X = np.array(X)
-    Y = np.array(Y)
-    xBar = np.mean(X)
-    yBar = np.mean(Y)
-    SSR = 0
-    varX = 0
-    varY = 0
+def PearsonR(X, Y,target):
+    X_ = copy.deepcopy(np.array(X)).reshape(-1,target)
+    Y_ = copy.deepcopy(np.array(Y)).reshape(-1,target)
+    R_value = 0
+    for j in range(target):
+        X = X_[:,j]
+        Y = Y_[:,j]
+        xBar = np.mean(X)
+        yBar = np.mean(Y)
+        SSR = 0
+        varX = 0
+        varY = 0
+        for i in range(0, len(X)):
+            diffXXBar = X[i] - xBar
+            diffYYBar = Y[i] - yBar
+            SSR += (diffXXBar * diffYYBar)
+            varX += diffXXBar ** 2
+            varY += diffYYBar ** 2
+        SST = math.sqrt(varX * varY)
+    R_value += (1 - SSR / SST)
+    return R_value/target
 
-    for i in range(0, len(X)):
-        diffXXBar = X[i] - xBar
-        diffYYBar = Y[i] - yBar
-        SSR += (diffXXBar * diffYYBar)
-        varX += diffXXBar ** 2
-        varY += diffYYBar ** 2
-    SST = math.sqrt(varX * varY)
-
-    return 1 - SSR / SST
 
 
 # define the function for calculating the standard normal probability distribution
@@ -446,6 +450,7 @@ def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit
     KErnel = RBF(length_scale_bounds = (1e-2, 1e2))
     X = dataset
     Y = response
+    target = Y.shape[1]
     loo = LeaveOneOut()
     y_pre_set = []
     y_std_set = []
@@ -466,9 +471,9 @@ def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit
         neg_lik_hood_set.append(neg_li)
         y_pre = Gpr_i.predict(X_test, return_std=True)[0]
         y_std = Gpr_i.predict(X_test, return_std=True)[1]
-        y_pre_set.append(y_pre)
-        y_std_set.append(y_std)
-    Rvalue = PearsonR(y_pre_set, Y)
+        y_pre_set.append(y_pre[0])
+        y_std_set.append(y_std.mean())
+    Rvalue = PearsonR(y_pre_set, Y,target)
     _LS_i = np.array(ls_set).mean()
     Lik_hood_value = np.array(neg_lik_hood_set).mean()
     GGMF_value = GGMfactor(Lik_hood_value, Rvalue, _LS_i, exploit_model)

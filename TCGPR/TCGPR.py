@@ -1,9 +1,8 @@
 # coding = UTF-8
-
 from . import TCGPRdata
 from . import TCGPRfeature
 from . import TCGPRdata_r
-import pandas as pd
+
 
 # =============================================================================
 # Public estimators
@@ -31,6 +30,7 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         Jun 16 2022 add note / Bin CAO
         Jan 12 2023 revise code framework / Bin CAO
         Jan 19 2023 supplement feature selection function / Bin CAO
+        Feb 3 2023 debug in multi-targets / Bin CAO
     ==================================================================
 
     Parameters
@@ -212,8 +212,8 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
 
     if Mission == 'DATA':
         if Sequence == 'forward':
-            print(' The first execution of TCGPR : Data screening ; forward version')
-            TCGPRdata.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
+            print('The first execution of TCGPR : Data screening ; forward version')
+            TCGPRdata.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search,target = target, exploit_coef=exploit_coef,
                 alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
             print('One conherenced dataset has been saved !')
             print('='*100)
@@ -226,12 +226,17 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
                     Num += 1 
                     print('The {num}-th execution of TCGPR'.format(num = Num))
                     data = pd.read_csv('Dataset remained by TCGPR.csv')
-                    if len(data.iloc[:,0]) < initial_set_cap:
-                        print('The outliers have been detected ')
-                        break
+                    try:
+                        if len(data.iloc[:,0]) < initial_set_cap:
+                            print('The outliers have been detected ')
+                            break
+                    except:
+                        if len(data.iloc[:,0]) < len(initial_set_cap):
+                            print('The outliers have been detected ')
+                            break
                     else:
                         try:
-                            TCGPRdata.cal_TCGPR(filePath="Dataset remained by TCGPR.csv", initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
+                            TCGPRdata.cal_TCGPR(filePath="Dataset remained by TCGPR.csv", initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, target = target,exploit_coef=exploit_coef,
                                 alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
                         except:
                             break
@@ -240,7 +245,7 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         elif Sequence == 'backward':
             print('Modle Data screening of backward searching is executed : param initial_set_cap is masked ')
             print('The first execution of TCGPR : Data screening; backward version')
-            TCGPRdata_r.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, exploit_coef=exploit_coef,
+            TCGPRdata_r.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search,target = target, exploit_coef=exploit_coef,
                 alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
             print('One conherenced dataset has been saved !')
             print('='*100)
