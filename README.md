@@ -17,6 +17,9 @@ Written using Python, which is suitable for operating systems, e.g., Windows/Lin
 ## Installing / 安装
     pip install TCGPR 
 
+## Checking / 查看
+    pip show TCGPR 
+    
 ## Updating / 更新
     pip install --upgrade TCGPR
 
