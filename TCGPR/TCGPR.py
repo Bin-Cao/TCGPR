@@ -9,7 +9,7 @@ from . import TCGPRdata_r
 # =============================================================================
 
 
-def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sampling_cap=1, ratio=0.1, target=1,up_search = 2e2, exploit_coef=2,Self_call = True, exploit_model = False, alpha=1e-10, n_restarts_optimizer=10,
+def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sampling_cap=1, ratio=0.1, target=1,up_search = 200, exploit_coef=2,Self_call = True, exploit_model = False, alpha=1e-10, n_restarts_optimizer=10,
           normalize_y=True,  ):
 
     """
@@ -209,6 +209,8 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         Tree-Classifier for Gaussian Process Regression. (一种高斯过程回归树分类器多元合金异常数据识别方法) 
         CN 115017977 A(2022)
     """
+    if type(up_search) != int:
+        print('Type Error: %s' % type(up_search), ' must be integer!')
 
     if Mission == 'DATA':
         if Sequence == 'forward':
