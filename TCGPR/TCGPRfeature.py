@@ -11,11 +11,12 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.model_selection import LeaveOneOut
 from itertools import combinations
+from sklearn.model_selection import KFold
 
 # the main function
 # treat the columns 
-def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.1, up_search = 20, target = 1, exploit_coef=2, alpha=1e-10, n_restarts_optimizer=10,
-          normalize_y=True, exploit_model = False):
+def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.005, up_search = 50, target = 1, exploit_coef=2, CV = 10,
+    alpha=1e-10, n_restarts_optimizer=10,normalize_y=True, exploit_model = False):
 
     """
     Algorithm name: Tree classifier for gaussian process regression
@@ -34,6 +35,9 @@ def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.1, up_search 
     :param up_search: up boundary of candidates for brute force search, default = 20 , recommend =  10-2e2
 
     :param exploit_coef: constrains to the magnitude of variance in Cal_EI function,default = 2, recommend = 2
+
+    :param CV: cross validation, default = 10
+    e.g. (int) CV = 5,10,... or str CV = 'LOOCV' for leave one out cross validation
 
     :param defined in Gpr
     alpha : float or array-like of shape (n_samples), default=1e-10
@@ -121,12 +125,12 @@ def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.1, up_search 
                 # read in the index of datum in raw dataset
                 zero_ini_dataset[:,feature] = data[:,initial_set_cap[feature]]
                 # save the selected features
-                Feature_Track.append(fea_name[feature])
+                Feature_Track.append(fea_name[initial_set_cap[feature]])
 
             ini_data = copy.deepcopy(zero_ini_dataset)
             
             # evaluate the quality of initial dataset
-            GGMF_ini,Rvalue,_ = dataset_eval(ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model)
+            GGMF_ini,Rvalue,_ = dataset_eval(ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV)
           
             fitting_goodness_track.append(1 - Rvalue)
             GGMF_GLOBAL_Track.append(GGMF_ini)
@@ -176,7 +180,7 @@ def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.1, up_search 
             Feature_set.append(fea_name_set)
 
             # testing the quality of initial dataset
-            GGMF_ini,Rvalue,y_std_set = dataset_eval(_ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model) 
+            GGMF_ini,Rvalue,y_std_set = dataset_eval(_ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV) 
             Rvalue_set.append(Rvalue)
             uncer_set.append(np.array(y_std_set).mean())
             # loss, the lower the better
@@ -247,7 +251,7 @@ def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.1, up_search 
                 break
 
             else:
-                _uncer_array,GGMF_inter_array,_Rvalue_set,_ = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,single_samples=True)
+                _uncer_array,GGMF_inter_array,_Rvalue_set,_ = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,single_samples=True)
 
                 Expected_improvement = Cal_EI(GGMF_inter_array, _uncer_array, GGMF_GLOBAL_Track[GGMF_inter_index],exploit_coef)
                 # select the best datum with highest improvement
@@ -319,7 +323,7 @@ def cal_TCGPR(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.1, up_search 
                 break
 
             else:
-                _uncer_array,GGMF_inter_array,_Rvalue_set,sampling_index = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,single_samples=0)
+                _uncer_array,GGMF_inter_array,_Rvalue_set,sampling_index = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,single_samples=0)
                 Expected_improvement = Cal_EI(GGMF_inter_array, _uncer_array, GGMF_GLOBAL_Track[GGMF_inter_index],exploit_coef)
                 EI_max = np.nanmax(Expected_improvement, axis=0)
                 EI_index = np.where(Expected_improvement == EI_max)[0][0]
@@ -445,41 +449,65 @@ def list_random_del_function(list_, up_save_num):
             out_list.append(list_[sav_index[i]])
     return out_list
 
-def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit_model):
+def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV):
     # evaluate the quality of dataset
     KErnel = RBF(length_scale_bounds = (1e-2, 1e2))
     X = dataset
     Y = response
     target = Y.shape[1]
-    loo = LeaveOneOut()
     y_pre_set = []
     y_std_set = []
     ls_set = []
     neg_lik_hood_set = []
-    for train_index, test_index in loo.split(X):
-        X_train, X_test = X[train_index], X[test_index]
-        y_train, _ = Y[train_index], Y[test_index]
-        Gpr_i = GaussianProcessRegressor(kernel=KErnel,
-                                        n_restarts_optimizer=n_restarts_optimizer,
-                                        alpha=alpha,
-                                        normalize_y=normalize_y,
-                                        random_state=0).fit(X_train, y_train)
+    if CV == 'LOOCV':
+        loo = LeaveOneOut()
+        for train_index, test_index in loo.split(X):
+            X_train, X_test = X[train_index], X[test_index]
+            y_train, _ = Y[train_index], Y[test_index]
+            Gpr_i = GaussianProcessRegressor(kernel=KErnel,
+                                            n_restarts_optimizer=n_restarts_optimizer,
+                                            alpha=alpha,
+                                            normalize_y=normalize_y,
+                                            random_state=0).fit(X_train, y_train)
 
-        LS_i = np.exp(Gpr_i.kernel_.theta)
-        ls_set.append(LS_i)
-        neg_li = - Gpr_i.log_marginal_likelihood(LS_i)
-        neg_lik_hood_set.append(neg_li)
-        y_pre = Gpr_i.predict(X_test, return_std=True)[0]
-        y_std = Gpr_i.predict(X_test, return_std=True)[1]
-        y_pre_set.append(y_pre[0])
-        y_std_set.append(y_std.mean())
-    Rvalue = PearsonR(y_pre_set, Y,target)
-    _LS_i = np.array(ls_set).mean()
-    Lik_hood_value = np.array(neg_lik_hood_set).mean()
-    GGMF_value = GGMfactor(Lik_hood_value, Rvalue, _LS_i, exploit_model)
+            LS_i = np.exp(Gpr_i.kernel_.theta)
+            ls_set.append(LS_i)
+            neg_li = - Gpr_i.log_marginal_likelihood(LS_i)
+            neg_lik_hood_set.append(neg_li)
+            y_pre = Gpr_i.predict(X_test, return_std=True)[0]
+            y_std = Gpr_i.predict(X_test, return_std=True)[1]
+            y_pre_set.append(y_pre[0])
+            y_std_set.append(y_std.mean())
+        Rvalue = PearsonR(y_pre_set, Y,target)
+        _LS_i = np.array(ls_set).mean()
+        Lik_hood_value = np.array(neg_lik_hood_set).mean()
+        GGMF_value = GGMfactor(Lik_hood_value, Rvalue, _LS_i, exploit_model)
+    else:
+        kfold = TCGPR_KFold(X, Y, CV)
+        for train_index, test_index in kfold:
+            X_train, X_test = X[train_index], X[test_index]
+            y_train, _ = Y[train_index], Y[test_index]
+            Gpr_i = GaussianProcessRegressor(kernel=KErnel,
+                                            n_restarts_optimizer=n_restarts_optimizer,
+                                            alpha=alpha,
+                                            normalize_y=normalize_y,
+                                            random_state=0).fit(X_train, y_train)
+
+            LS_i = np.exp(Gpr_i.kernel_.theta)
+            ls_set.append(LS_i)
+            neg_li = - Gpr_i.log_marginal_likelihood(LS_i)
+            neg_lik_hood_set.append(neg_li)
+            y_pre = Gpr_i.predict(X_test, return_std=True)[0]
+            y_std = Gpr_i.predict(X_test, return_std=True)[1]
+            y_pre_set.append(y_pre[0])
+            y_std_set.append(y_std.mean())
+        Rvalue = PearsonR(y_pre_set, Y,target)
+        _LS_i = np.array(ls_set).mean()
+        Lik_hood_value = np.array(neg_lik_hood_set).mean()
+        GGMF_value = GGMfactor(Lik_hood_value, Rvalue, _LS_i, exploit_model)
     return GGMF_value,Rvalue,y_std_set
 
-def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,single_samples=True):
+def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,single_samples=True):
     # add one datum 
     if single_samples == True:
         GGMF_inter_set = []
@@ -489,7 +517,7 @@ def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normali
             dataset_inter = copy.deepcopy(ini_data)
             dataset_inter = np.column_stack((dataset_inter, up_data[:,i]))
 
-            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model)
+            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV)
 
             _Rvalue_set.append(_Rvalue)
             _uncer_set.append(np.array(_y_std_set).mean())
@@ -510,7 +538,7 @@ def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normali
             sampling_index = copy.deepcopy(cal_sampling_index)
             print('The algorithm will searching all candidates by brute force searching')
         else:
-            print(' Candidates at current searching space are {totalcan} \n'
+            print('Candidates at current searching space are {totalcan} \n'
                     ' {samcan} candidates will be randomly chosen and compared'.format(totalcan = len(cal_sampling_index), samcan= up_search))
             sampling_index = list_random_del_function(cal_sampling_index,up_search)
 
@@ -525,7 +553,7 @@ def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normali
             dataset_inter = copy.deepcopy(ini_data)
             dataset_inter = np.column_stack((dataset_inter, sam_data))
             
-            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model)
+            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV)
             _Rvalue_set.append(_Rvalue)
             _uncer_set.append(np.array(_y_std_set).mean())
             GGMF_inter_set.append(GGMF_inter)
@@ -533,3 +561,11 @@ def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normali
         _uncer_array = np.array(_uncer_set)
         GGMF_inter_array = np.array(GGMF_inter_set)
     return _uncer_array,GGMF_inter_array,_Rvalue_set,sampling_index
+
+
+def TCGPR_KFold(x_train, y_train,cv):
+    x_train = np.array(x_train)
+    y_train = np.array(y_train)
+    kfolder = KFold(n_splits=cv, shuffle=True,random_state=0)
+    kfold = kfolder.split(x_train, y_train)
+    return kfold

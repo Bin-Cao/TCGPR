@@ -1,16 +1,18 @@
 # coding = UTF-8
+
 from . import TCGPRdata
 from . import TCGPRfeature
 from . import TCGPRdata_r
-
+import pandas as pd 
 
 # =============================================================================
 # Public estimators
 # =============================================================================
 
 
-def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sampling_cap=1, ratio=0.1, target=1,up_search = 200, exploit_coef=2,Self_call = True, exploit_model = False, alpha=1e-10, n_restarts_optimizer=10,
-          normalize_y=True,  ):
+def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sampling_cap=1, 
+    ratio=0.1, target=1,up_search = 200, exploit_coef=2, Self_call = True, exploit_model = False, CV =5,
+    alpha=1e-10, n_restarts_optimizer=10, normalize_y=True, ):
 
     """
     Algorithm name: Tree classifier for gaussian process regression
@@ -31,6 +33,7 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         Jan 12 2023 revise code framework / Bin CAO
         Jan 19 2023 supplement feature selection function / Bin CAO
         Feb 3 2023 debug in multi-targets / Bin CAO
+        Feb 10 2023 add N folds cross validation / Bin CAO
     ==================================================================
 
     Parameters
@@ -48,7 +51,8 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
     ++ if Sequence = 'forward':
         initial_set_cap : the capacity of the initial dataset
         int, default = 3, recommend = 3-10
-        or a list : i.e.,  
+        or a list : 
+        i.e.,  
         [3,4,8], means the 4-th, 5-th, 9-th datum will be collected as the initial dataset
     ++ elif Sequence = 'backward':
         param initial_set_cap is masked 
@@ -97,6 +101,9 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
 
     :param exploit_model: boolean, default, False
         exploit_model == True, the searching direction will be R only! GGMF will not be used!
+
+    :param CV: cross validation, default = 10
+        e.g. (int) CV = 5,10,... or str CV = 'LOOCV' for leave one out cross validation
 
     :param defined in Gpr of sklearn package
     ==================================================================
@@ -156,7 +163,6 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
 
     Examples
     --------
-    import pandas as pd
     for Mission = 'DATA':
     ++ if Sequence = 'forward':
         #coding=utf-8
@@ -166,9 +172,10 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         sampling_cap =2
         ratio = 0.2
         up_search = 500
+        CV = 10
         TCGPR.fit(
             filePath = dataSet, initial_set_cap = initial_set_cap, sampling_cap = sampling_cap,
-            ratio = ratio, up_search = up_search
+            ratio = ratio, up_search = up_search,CV=CV
                 )
         note: default setting of Mission = 'DATA', No need to declare
     ++ elif Sequence = 'backward':
@@ -179,9 +186,10 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         sampling_cap =2
         ratio = 0.001 # recommend a small float value
         up_search = 500
+        CV = 10
         TCGPR.fit(
             filePath = dataSet, Sequence = 'backward', sampling_cap = sampling_cap,
-            ratio = ratio, up_search = up_search
+            ratio = ratio, up_search = up_search,CV=CV
                 )
         note: default setting of Mission = 'DATA', No need to declare; initial_set_cap is masked 
     + for Mission = 'FEATURE': 
@@ -191,11 +199,12 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         sampling_cap =2
         ratio = 0.001 # recommend a small float value
         up_search = 500
+        CV = 10
         TCGPR.fit(
             filePath = dataSet, Mission = 'FEATURE', initial_set_cap = initial_set_cap, sampling_cap = sampling_cap,
-            ratio = ratio, up_search = up_search
+            ratio = ratio, up_search = up_search,CV=CV
                 )
-        note: for feature selection, Mission should be declared as  Mission = 'FEATURE' ! 
+        note: for feature selection, Mission should be declared as Mission = 'FEATURE' ! 
     
     References
     ----------
@@ -211,16 +220,27 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
     """
     if type(up_search) != int:
         print('Type Error: %s' % type(up_search), ' must be integer!')
+    
+    if CV == 'LOOCV':
+        print('Leave one out cross validation is applied in TCGPR')
+    elif type(CV) == int :
+        print('{} folds cross validation is applied in TCGPR'.format(CV))
+    else: 
+        print('Type Error: %s' % type(CV) ,'must be integer of str')
+        print('E.g., CV = 10 or CV = \'LOOCV\'')
 
     if Mission == 'DATA':
         if Sequence == 'forward':
             print('The first execution of TCGPR : Data screening ; forward version')
+            if CV == 'LOOCV':
+                pass
+            elif CV > initial_set_cap:
+                print('The value of initial_set_cap must larger than CV !')
             TCGPRdata.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search,target = target, exploit_coef=exploit_coef,
-                alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+                CV=CV,alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
             print('One conherenced dataset has been saved !')
             print('='*100)
 
-            
             if Self_call == True:
                 print('Self_call is True, the remianed data will be screened by TCGPR')
                 Num = 0
@@ -239,7 +259,7 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
                     else:
                         try:
                             TCGPRdata.cal_TCGPR(filePath="Dataset remained by TCGPR.csv", initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, target = target,exploit_coef=exploit_coef,
-                                alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+                                CV=CV,alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
                         except:
                             break
             else:
@@ -247,15 +267,15 @@ def fit(filePath, Mission = 'DATA', Sequence = 'forward', initial_set_cap=3, sam
         elif Sequence == 'backward':
             print('Modle Data screening of backward searching is executed : param initial_set_cap is masked ')
             print('The first execution of TCGPR : Data screening; backward version')
-            TCGPRdata_r.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search,target = target, exploit_coef=exploit_coef,
-                alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+            TCGPRdata_r.cal_TCGPR(filePath=filePath, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search,target = target, exploit_coef=exploit_coef,
+                CV=CV,alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
             print('One conherenced dataset has been saved !')
             print('='*100)
 
     if Mission == 'FEATURE':
         print('The first execution of TCGPR : Feature selection')
         TCGPRfeature.cal_TCGPR(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, target = target, exploit_coef=exploit_coef,
-            alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
+            CV=CV,alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
         print('One conherenced dataset with selected features has been saved !')
         print('='*100)
 
