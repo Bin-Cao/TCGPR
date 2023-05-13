@@ -22,7 +22,7 @@ Written using Python, which is suitable for operating systems, e.g., Windows/Lin
     pip install --upgrade PyTcgpr
 
 ## Running / 运行
-See [Template](https://github.com/Bin-Cao/TCGPR/tree/main/Template)
+See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
     
 ## output : 
 + [Dataset remained by TCGPR.csv]
