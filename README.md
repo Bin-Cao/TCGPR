@@ -1,8 +1,7 @@
 🤝🤝🤝 Please star ⭐️ it for promoting open source projects 🌍 ! Thanks !
 
-Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/TCGPR/)
+Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
 # TCGPR package 
-
 
 Tree-Classifier for Gaussian process regression 
 
@@ -12,6 +11,9 @@ Cite :
 
 Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
 
+## Algorithm Intro / 算法介绍
+See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
+
 ## Installing / 安装
     pip install PyTcgpr 
 
@@ -20,22 +22,25 @@ Written using Python, which is suitable for operating systems, e.g., Windows/Lin
     
 ## Updating / 更新
     pip install --upgrade PyTcgpr
+## Structure / 结构
 
+``` javascript
+PyTcgpr/
+    __init__.py
+    data/
+        __init__.py
+        OutliersIdentification.py
+        DatasetPartition.py
+    feature/
+        __init__.py
+        FeaturesSelection.py
+    TCGPR.py
+``` 
 ## Running / 运行
-See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
+
     
 ## output : 
 + [Dataset remained by TCGPR.csv]
-
-## Update log 
-TCLR V1.0 Oct, 2022. 
-*official release version*
-
-TCLR V1.2 Jan, 2023. 
-*add function of feature selection*
-
-TCLR V1.3 Feb, 2023. 
-*add Multi-targets/cross-validation*
 
 ## About 
 Maintained by Bin Cao. Please feel free to open issues in the Github or contact Bin Cao
