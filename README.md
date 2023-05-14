@@ -38,7 +38,50 @@ PyTcgpr/
 ``` 
 ## Running / 运行
 
-    
++ Data Screening module | Partition
+``` javascript
+from PyTcgpr import TCGPR
+dataSet = "data.csv"
+initial_set_cap = 3
+sampling_cap =2
+up_search = 500
+CV = 10
+Task = 'Partition'
+TCGPR.fit(
+    filePath = dataSet, initial_set_cap = initial_set_cap,Task=Task, sampling_cap = sampling_cap,
+    up_search = up_search, CV=CV
+        )
+# note: default setting of Mission = 'DATA', No need to declare
+```
++ Data Screening module | Identification
+``` javascript
+from PyTcgpr import TCGPR
+dataSet = "data.csv"
+sampling_cap =2
+up_search = 500
+Task = 'Identification'
+CV = 10
+TCGPR.fit(
+    filePath = dataSet, Task = Task, sampling_cap = sampling_cap,
+    up_search = up_search,CV=CV
+        )
+# note: default setting of Mission = 'DATA', No need to declare; initial_set_cap is masked 
+```
++ Feature Selection module
+``` javascript
+from PyTcgpr import TCGPR
+dataSet = "data.csv"
+sampling_cap =2
+Mission = 'FEATURE'
+up_search = 500
+CV = 10
+TCGPR.fit(
+    filePath = dataSet, Mission = 'FEATURE', initial_set_cap = initial_set_cap, sampling_cap = sampling_cap,
+    up_search = up_search,CV=CV
+        )
+# note: for feature selection, Mission should be declared as Mission = 'FEATURE' ! 
+```
+
 ## output : 
 + [Dataset remained by TCGPR.csv]
 
