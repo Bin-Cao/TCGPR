@@ -37,11 +37,9 @@ See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
 PyTcgpr/
     __init__.py
     data/
-        __init__.py
         OutliersIdentification.py
         DatasetPartition.py
     feature/
-        __init__.py
         FeaturesSelection.py
     TCGPR.py
 ``` 
