@@ -36,12 +36,12 @@ See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
 ``` javascript
 PyTcgpr/
     __init__.py
+    TCGPR.py
     data/
         OutliersIdentification.py
         DatasetPartition.py
     feature/
         FeaturesSelection.py
-    TCGPR.py
 ``` 
 ## Running / 运行
 
