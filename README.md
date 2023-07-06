@@ -36,14 +36,12 @@ See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
 ``` javascript
 PyTcgpr/
     __init__.py
+    TCGPR.py
     data/
-        __init__.py
         OutliersIdentification.py
         DatasetPartition.py
     feature/
-        __init__.py
         FeaturesSelection.py
-    TCGPR.py
 ``` 
 ## Running / 运行
 
@@ -54,7 +52,7 @@ dataSet = "data.csv"
 initial_set_cap = 3
 sampling_cap =2
 up_search = 500
-CV = 10
+CV = 'LOOCV'
 Task = 'Partition'
 TCGPR.fit(
     filePath = dataSet, initial_set_cap = initial_set_cap,Task=Task, sampling_cap = sampling_cap,
@@ -69,7 +67,7 @@ dataSet = "data.csv"
 sampling_cap =2
 up_search = 500
 Task = 'Identification'
-CV = 10
+CV = 'LOOCV'
 TCGPR.fit(
     filePath = dataSet, Task = Task, sampling_cap = sampling_cap,
     up_search = up_search,CV=CV
@@ -83,7 +81,7 @@ dataSet = "data.csv"
 sampling_cap =2
 Mission = 'FEATURE'
 up_search = 500
-CV = 10
+CV = 'LOOCV'
 TCGPR.fit(
     filePath = dataSet, Mission = 'FEATURE', initial_set_cap = initial_set_cap, sampling_cap = sampling_cap,
     up_search = up_search,CV=CV
