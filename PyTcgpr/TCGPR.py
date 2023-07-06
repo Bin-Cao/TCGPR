@@ -12,7 +12,7 @@ from .feature.FeaturesSelection import Feature
 
 
 def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampling_cap=1, 
-    ratio=None, target=1, weight = 2, up_search = None, exploit_coef=2, exploit_model = False, CV =5,
+    ratio=None, target=1, weight = .2, up_search = None, exploit_coef=2, exploit_model = False, CV =5,
     alpha=1e-10, n_restarts_optimizer=10, normalize_y=True,):
 
     """
@@ -88,7 +88,7 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
     otherwise : param target is masked 
     
     :param weight
-    a weight imposed on R value in calculating GGMF, default = 2 , recommend =  1-10
+    a weight imposed on R value in calculating GGMF, default = .2 , recommend =  1-10
     i.e.,
         weight * (1-R) +  mean / std (mean, std is the mean and standard deviation of length scales) 
 
