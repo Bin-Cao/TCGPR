@@ -14,13 +14,18 @@ Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.
 
 Tree-Classifier for Gaussian process regression 
 
-Cite : 
+## Cite : 
 + (Software copyright) Zhang Tong-yi, Cao Bin, Sun Sheng. Tree-Classifier for Gaussian Process Regression. 2022SR1423038 (2022), GitHub : github.com/Bin-Cao/TCGPR.
 
 
 Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
 
 ## Algorithm Intro / 算法介绍
+
+<h1 align="left">
+  <a href=""><img src="https://github.com/Bin-Cao/TCGPR/assets/86995074/6a068f12-3e1a-44df-ae77-b08075fec5a3" alt="TCGPR" width="150"></a>
+</h1>
+
 See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
 
 ## Installing / 安装
@@ -135,7 +140,7 @@ TCGPR.fit(
     otherwise : param target is masked 
     
     :param weight
-    a weight imposed on R value in calculating GGMF, default = 2 , recommend =  1-10
+    a weight imposed on R value in calculating GGMF, default = .2 , recommend =  .1-1
     i.e.,
         weight * (1-R) +  mean / std (mean, std is the mean and standard deviation of length scales) 
 
