@@ -88,7 +88,7 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
     otherwise : param target is masked 
     
     :param weight
-    a weight imposed on R value in calculating GGMF, default = .2 , recommend =  1-10
+    a weight imposed on R value in calculating GGMF, default = .2 , recommend =  .1-1
     i.e.,
         weight * (1-R) +  mean / std (mean, std is the mean and standard deviation of length scales) 
 
