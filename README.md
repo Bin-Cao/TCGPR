@@ -25,6 +25,7 @@ Written using Python, which is suitable for operating systems, e.g., Windows/Lin
 <h1 align="left">
   <a href=""><img src="https://github.com/Bin-Cao/TCGPR/assets/86995074/6a068f12-3e1a-44df-ae77-b08075fec5a3" alt="TCGPR" width="150"></a>
 </h1>
+
 See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
 
 ## Installing / 安装
