@@ -10,6 +10,11 @@
 🤝🤝🤝 Please star ⭐️ it for promoting open source projects 🌍 ! Thanks !
 
 Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Bin-Cao/TCGPR&type=Date)](https://star-history.com/#Bin-Cao/TCGPR&Date)
+
 # TCGPR package 
 
 Tree-Classifier for Gaussian process regression 
