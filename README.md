@@ -11,6 +11,12 @@
 
 Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
 
+## Links
++ https://www.shu.edu.cn/info/1055/321555.htm
++ https://mp.weixin.qq.com/s/aZ9bZY1z_Bcd6Uepu7D3Mg
++ https://mp.weixin.qq.com/s/ssj5kP-RfIpKRS6QjcLHTQ
+
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Bin-Cao/TCGPR&type=Date)](https://star-history.com/#Bin-Cao/TCGPR&Date)
