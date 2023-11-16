@@ -15,7 +15,7 @@ Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.
 + https://www.shu.edu.cn/info/1055/321555.htm
 + https://mp.weixin.qq.com/s/aZ9bZY1z_Bcd6Uepu7D3Mg
 + https://mp.weixin.qq.com/s/ssj5kP-RfIpKRS6QjcLHTQ
-
++ [user count](https://pypistats.org/packages/pytcgpr)
 
 ## Star History
 
