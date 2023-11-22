@@ -26,7 +26,7 @@ Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.
 Tree-Classifier for Gaussian process regression 
 
 ## If you are using this code, please cite:
-+ (**Software copyright**) Zhang Tong-yi, Cao Bin, Sun Sheng. Tree-Classifier for Gaussian Process Regression. 2022SR1423038 (2022), GitHub : github.com/Bin-Cao/TCGPR.
++ (**Patent**) Zhang Tong-yi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Tree-Classifier for Gaussian Process Regression. CN 115017977 A (2022.09.06), GitHub : github.com/Bin-Cao/TCGPR.
 + (**journal, npj Comput Mater**) Wei, Q., Cao, B., Yuan, H. et al. Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility. npj Comput Mater 9, 201 (2023). https://doi.org/10.1038/s41524-023-01150-0
 
 
