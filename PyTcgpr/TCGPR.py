@@ -11,7 +11,7 @@ from .feature.FeaturesSelection import Feature
 # =============================================================================
 
 
-def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampling_cap=1, 
+def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampling_cap=1, measure = 'Pearson',
     ratio=None, target=1, weight = .2, up_search = None, exploit_coef=2, exploit_model = False, CV =5,
     alpha=1e-10, n_restarts_optimizer=10, normalize_y=True,):
 
@@ -19,25 +19,15 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
     Algorithm name: Tree classifier for gaussian process regression
     Tasks : Dataset Partition & Outliers Identification & Features Selection
     Author: Bin CAO <binjacobcao@gmail.com> 
-    Zhejiang LAB, HangZhou, CHINA.
-    MGI, Shanghai University, Shanghai, CHINA.
+    Guangzhou Municipal Key Laboratory of Materials Informatics, Advanced Materials Thrust,
+    Hong Kong University of Science and Technology (Guangzhou), Guangzhou 511400, Guangdong, China
 
     ==================================================================
     Please feel free to open issues in the Github :
     https://github.com/Bin-Cao/TCGPR
     or 
-    contact Bin Cao (bcao@shu.edu.cn)
+    contact Mr.Bin Cao (bcao@shu.edu.cn)
     in case of any problems/comments/suggestions in using the code. 
-    ==================================================================
-
-    ==================================================================
-    encode log: 
-        March 14 2022 first version for data screening / Bin CAO
-        Jun 16 2022 add note / Bin CAO
-        Jan 12 2023 revise code framework / Bin CAO
-        Jan 19 2023 supplement feature selection function / Bin CAO
-        Feb 3 2023 debug in multi-targets / Bin CAO
-        Feb 10 2023 add N folds cross validation / Bin CAO
     ==================================================================
 
     Parameters
@@ -72,14 +62,17 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
     for Mission = 'FEATURE':
         int, the number of features added to the updating feature set at each iteration, default = 1, recommend = 1-3
 
+    :param measure :Correlation criteria, default 'Pearson' means R values are used
+        or measure = 'Determination' means R^2 values are used
+
     :param ratio: 
     for Mission = 'DATA':
         if Task = 'Partition':
-        tolerance, lower boundary of R is (1-ratio)Rmax, default = 0.2, recommend = 0~0.3
+        tolerance, lower boundary of R is (1-ratio)Rmax, default = 0.5, recommend = 0~1
         elif Task = 'Identification':
-        tolerance, lower boundary of R is (1+ratio)R[last], default = 0.0, recommend = -0.01~0.01
+        tolerance, lower boundary of R is (1+ratio)R[last], default = 0.0, recommend = -0.1~0.1
     for Mission = 'FEATURE':
-        tolerance, lower boundary of R is (1+ratio)R[last], default = -0.01, recommend = -0.01~0.01
+        tolerance, lower boundary of R is (1+ratio)R[last], default = -0.1, recommend = -0.1~0.1
 
     :param target:
     used in feature selection when Mission = 'FEATURE'
@@ -91,6 +84,7 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
     a weight imposed on R value in calculating GGMF, default = .2 , recommend =  .1-1
     i.e.,
         weight * (1-R) +  mean / std (mean, std is the mean and standard deviation of length scales) 
+    if weight = 0, TCGPR becomes a unsupervised algorithm, however, the cutoff threshold is still related to R value
 
     :param up_search: 
     for Mission = 'DATA':
@@ -214,10 +208,6 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
     References
     ----------
     .. [1] https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf
-
-    .. [2] Software copyright : Zhang Tong-yi, Cao Bin, Sun Sheng. 
-        Tree-Classifier for Gaussian Process Regression. 
-        2022SR1423038 (2022)
     """
     
     if type(up_search) != int and up_search != None:
@@ -242,14 +232,14 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
         if Task == 'Partition':
             print('Execution of TCGPR : Dataset Partition Module')
             if ratio == None:
-                ratio = 0.2
+                ratio = 0.5
             # In this module, the value of cv need to be detected in advance 
             if CV == 'LOOCV':
                 pass
             elif CV > initial_cap:
                 print('The value of initial_set_cap must larger than the value of CV !')
 
-            DataDP(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search,target = target, weight=weight,exploit_coef=exploit_coef,
+            DataDP(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap,measure=measure, ratio=ratio, up_search = up_search,target = target, weight=weight,exploit_coef=exploit_coef,
                 CV=CV,alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
             print('The conherenced dataset has been saved !')
             print('='*100)
@@ -258,7 +248,7 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
             print('Execution of TCGPR : Outlier Identification Module | param initial_set_cap is masked')
             if ratio == None:
                 ratio = 0.0
-            DataOutI(filePath=filePath, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search,target = target, weight=weight,exploit_coef=exploit_coef,
+            DataOutI(filePath=filePath, sampling_cap=sampling_cap, measure=measure,ratio=ratio, up_search = up_search,target = target, weight=weight,exploit_coef=exploit_coef,
                 CV=CV,alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
             print('The Outliers has been deleted !')
             print('='*100)
@@ -267,9 +257,9 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
         if up_search == None:
             up_search = 10
         if ratio == None:
-            ratio = -0.01
+            ratio = -0.1
         print('Execution of TCGPR : Feature Selection Module')
-        Feature(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, ratio=ratio, up_search = up_search, target = target,weight=weight, exploit_coef=exploit_coef,
+        Feature(filePath=filePath, initial_set_cap=initial_set_cap, sampling_cap=sampling_cap, measure=measure,ratio=ratio, up_search = up_search, target = target,weight=weight, exploit_coef=exploit_coef,
             CV=CV,alpha=alpha, n_restarts_optimizer=n_restarts_optimizer,normalize_y=normalize_y, exploit_model = exploit_model)
         print('Important features has been saved !')
         print('='*100)

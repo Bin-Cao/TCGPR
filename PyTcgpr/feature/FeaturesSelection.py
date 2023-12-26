@@ -15,14 +15,13 @@ from sklearn.gaussian_process.kernels import RBF
 from sklearn.model_selection import LeaveOneOut
 from itertools import combinations
 from sklearn.model_selection import KFold
+from sklearn.metrics import r2_score
 
-def Feature(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.005, up_search = 50, target = 1, weight=1,exploit_coef=2, CV = 10,
+def Feature(filePath, initial_set_cap=2, sampling_cap=1,measure='Pearson', ratio=0.005, up_search = 50, target = 1, weight=1,exploit_coef=2, CV = 10,
     alpha=1e-10, n_restarts_optimizer=10,normalize_y=True, exploit_model = False):
     """
     TCGPR: Feature Selection
     Author: Bin CAO <binjacobcao@gmail.com> 
-    Zhejiang LAB, HangZhou, CHINA.
-    MGI, Shanghai University, Shanghai, CHINA.
     """
 
     # import dataset
@@ -56,7 +55,7 @@ def Feature(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.005, up_search 
             ini_data = copy.deepcopy(zero_ini_dataset)
             
             # evaluate the quality of initial dataset
-            GGMF_ini,Rvalue,_ = dataset_eval(ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight)
+            GGMF_ini,Rvalue,_ = dataset_eval(ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight,measure)
           
             fitting_goodness_track.append(1 - Rvalue)
             GGMF_GLOBAL_Track.append(GGMF_ini)
@@ -106,7 +105,7 @@ def Feature(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.005, up_search 
             Feature_set.append(fea_name_set)
 
             # testing the quality of initial dataset
-            GGMF_ini,Rvalue,y_std_set = dataset_eval(_ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight) 
+            GGMF_ini,Rvalue,y_std_set = dataset_eval(_ini_data,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight,measure) 
             Rvalue_set.append(Rvalue)
             uncer_set.append(np.array(y_std_set).mean())
             # loss, the lower the better
@@ -177,7 +176,7 @@ def Feature(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.005, up_search 
                 break
 
             else:
-                _uncer_array,GGMF_inter_array,_Rvalue_set,_ = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,weight,single_samples=True)
+                _uncer_array,GGMF_inter_array,_Rvalue_set,_ = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,weight,measure,single_samples=True)
 
                 Expected_improvement = Cal_EI(GGMF_inter_array, _uncer_array, GGMF_GLOBAL_Track[GGMF_inter_index],exploit_coef)
                 # select the best datum with highest improvement
@@ -249,7 +248,7 @@ def Feature(filePath, initial_set_cap=2, sampling_cap=1, ratio=0.005, up_search 
                 break
 
             else:
-                _uncer_array,GGMF_inter_array,_Rvalue_set,sampling_index = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,weight,single_samples=0)
+                _uncer_array,GGMF_inter_array,_Rvalue_set,sampling_index = best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,weight,measure,single_samples=0)
                 Expected_improvement = Cal_EI(GGMF_inter_array, _uncer_array, GGMF_GLOBAL_Track[GGMF_inter_index],exploit_coef)
                 EI_max = np.nanmax(Expected_improvement, axis=0)
                 EI_index = np.where(Expected_improvement == EI_max)[0][0]
@@ -313,26 +312,32 @@ def complate_dataset(dataset,response,response_name):
     return dataset
 
 # define the function for calculating 1-R value
-def PearsonR(X, Y,target):
+def PearsonR(X, Y,target,measure):
     X_ = copy.deepcopy(np.array(X)).reshape(-1,target)
     Y_ = copy.deepcopy(np.array(Y)).reshape(-1,target)
     R_value = 0
-    for j in range(target):
-        X = X_[:,j]
-        Y = Y_[:,j]
-        xBar = np.mean(X)
-        yBar = np.mean(Y)
-        SSR = 0
-        varX = 0
-        varY = 0
-        for i in range(0, len(X)):
-            diffXXBar = X[i] - xBar
-            diffYYBar = Y[i] - yBar
-            SSR += (diffXXBar * diffYYBar)
-            varX += diffXXBar ** 2
-            varY += diffYYBar ** 2
-        SST = math.sqrt(varX * varY)
-    R_value += (1 - SSR / SST)
+    if measure == 'Pearson':
+        for j in range(target):
+            X = X_[:,j]
+            Y = Y_[:,j]
+            xBar = np.mean(X)
+            yBar = np.mean(Y)
+            SSR = 0
+            varX = 0
+            varY = 0
+            for i in range(0, len(X)):
+                diffXXBar = X[i] - xBar
+                diffYYBar = Y[i] - yBar
+                SSR += (diffXXBar * diffYYBar)
+                varX += diffXXBar ** 2
+                varY += diffYYBar ** 2
+            SST = math.sqrt(varX * varY)
+            R_value += (1 - SSR / SST)
+    elif measure == 'Determination':
+        for j in range(target):
+            X = X_[:,j]
+            Y = Y_[:,j]
+            R_value += (1 - r2_score(X,Y))
     return R_value/target
 
 # define the function for calculating the standard normal probability distribution
@@ -375,7 +380,7 @@ def list_random_del_function(list_, up_save_num):
             out_list.append(list_[sav_index[i]])
     return out_list
 
-def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight):
+def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight,measure):
     # evaluate the quality of dataset
     KErnel = RBF(length_scale_bounds = (1e-2, 1e2))
     X = dataset
@@ -400,7 +405,7 @@ def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit
             y_std = Gpr_i.predict(X_test, return_std=True)[1]
             y_pre_set.append(y_pre[0])
             y_std_set.append(y_std.mean())
-        Rvalue = PearsonR(y_pre_set, Y,target)
+        Rvalue = PearsonR(y_pre_set, Y,target,measure)
         GGMF_value = GGMfactor(Rvalue, np.array(Length_scale), exploit_model,weight)
     else:
         kfold = TCGPR_KFold(X, Y, CV)
@@ -417,11 +422,11 @@ def dataset_eval(dataset,response,n_restarts_optimizer,alpha,normalize_y,exploit
             y_std = Gpr_i.predict(X_test, return_std=True)[1]
             y_pre_set.append(y_pre[0])
             y_std_set.append(y_std.mean())
-        Rvalue = PearsonR(y_pre_set, Y,target)
+        Rvalue = PearsonR(y_pre_set, Y,target,measure)
         GGMF_value = GGMfactor(Rvalue, np.array(Length_scale), exploit_model,weight)
     return GGMF_value,Rvalue,y_std_set
 
-def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,weight,single_samples=True):
+def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normalize_y,exploit_model,sampling_cap,up_search,CV,weight,measure,single_samples=True):
     # add one datum 
     if single_samples == True:
         GGMF_inter_set = []
@@ -431,7 +436,7 @@ def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normali
             dataset_inter = copy.deepcopy(ini_data)
             dataset_inter = np.column_stack((dataset_inter, up_data[:,i]))
 
-            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight)
+            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight,measure)
 
             _Rvalue_set.append(_Rvalue)
             _uncer_set.append(np.array(_y_std_set).mean())
@@ -467,7 +472,7 @@ def best_supplement(response,up_data,ini_data,n_restarts_optimizer,alpha,normali
             dataset_inter = copy.deepcopy(ini_data)
             dataset_inter = np.column_stack((dataset_inter, sam_data))
             
-            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight)
+            GGMF_inter,_Rvalue, _y_std_set= dataset_eval(dataset_inter,response,n_restarts_optimizer,alpha,normalize_y,exploit_model,CV,weight,measure)
             _Rvalue_set.append(_Rvalue)
             _uncer_set.append(np.array(_y_std_set).mean())
             GGMF_inter_set.append(GGMF_inter)
