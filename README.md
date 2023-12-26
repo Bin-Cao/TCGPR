@@ -11,6 +11,12 @@
 
 Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
 
+## Links
++ https://www.shu.edu.cn/info/1055/321555.htm
++ https://mp.weixin.qq.com/s/aZ9bZY1z_Bcd6Uepu7D3Mg
++ https://mp.weixin.qq.com/s/ssj5kP-RfIpKRS6QjcLHTQ
++ [user count](https://pypistats.org/packages/pytcgpr)
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Bin-Cao/TCGPR&type=Date)](https://star-history.com/#Bin-Cao/TCGPR&Date)
@@ -20,8 +26,8 @@ Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.
 Tree-Classifier for Gaussian process regression 
 
 ## If you are using this code, please cite:
-+ (**Software copyright**) Zhang Tong-yi, Cao Bin, Sun Sheng. Tree-Classifier for Gaussian Process Regression. 2022SR1423038 (2022), GitHub : github.com/Bin-Cao/TCGPR.
-+ (**journal, npj Comput Mater**) Wei, Q., Cao, B., Yuan, H. et al. Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility. npj Comput Mater 9, 201 (2023). https://doi.org/10.1038/s41524-023-01150-0
++ (**Patent**) Zhang Tong-yi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Tree-Classifier for Gaussian Process Regression. CN 115017977 A (2022.09.06), GitHub : github.com/Bin-Cao/TCGPR.
++ (**journal, npj Comput Mater**) Wei Qinghua, Cao Bin, Yuan Hao, et al. Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility. npj Comput Mater 9, 201 (2023). https://doi.org/10.1038/s41524-023-01150-0
 
 
 Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
@@ -125,6 +131,9 @@ TCGPR.fit(
         int, the number of data added to the updating dataset at each iteration, default = 1, recommend = 1-5
     for Mission = 'FEATURE':
         int, the number of features added to the updating feature set at each iteration, default = 1, recommend = 1-3
+
+    :param measure :Correlation criteria, default 'Pearson' means R values are used
+        or measure = 'Determination' means R^2 values are used
 
     :param ratio: 
     for Mission = 'DATA':
