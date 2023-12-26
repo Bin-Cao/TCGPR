@@ -132,6 +132,9 @@ TCGPR.fit(
     for Mission = 'FEATURE':
         int, the number of features added to the updating feature set at each iteration, default = 1, recommend = 1-3
 
+    :param measure :Correlation criteria, default 'Pearson' means R values are used
+        or measure = 'Determination' means R^2 values are used
+
     :param ratio: 
     for Mission = 'DATA':
         if Task = 'Partition':
