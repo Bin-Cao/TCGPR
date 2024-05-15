@@ -153,7 +153,7 @@ TCGPR.fit(
 
 
 ## applications 
-+ Wei Q&, Cao B&, Yuan H&, et al. Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility[J]. npj Computational Materials, 2023, 9(1): 201.
++ Wei, Q.&, Cao, B.&, Yuan, H.&, Chen, Y., You, K., Yu, S., ... & Zhang, T. Y. (2023). Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility. npj Computational Materials, 9(1), 201.
 
 
 ## About 
