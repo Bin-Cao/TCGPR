@@ -1,10 +1,4 @@
 
-<h1 align="center">
-  <a href=""><img src="https://github.com/Bin-Cao/TCGPR/assets/86995074/b24118cc-8915-4dd6-8718-2b184ebdf273" alt="TCGPR" width="150"></a>
-  <br>
-  PyTcgpr
-  <br>
-</h1>
 
 
 🤝🤝🤝 Please star ⭐️ it for promoting open source projects 🌍 ! Thanks !
@@ -156,6 +150,11 @@ TCGPR.fit(
 
 ## output : 
 + [Dataset remained by TCGPR.csv]
+
+
+## applications 
++ Wei, Q.&, Cao, B.&, Yuan, H.&, Chen, Y., You, K., Yu, S., ... & Zhang, T. Y. (2023). Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility. npj Computational Materials, 9(1), 201.
+
 
 ## About 
 Maintained by Bin Cao. Please feel free to open issues in the Github or contact Bin Cao
