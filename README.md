@@ -1,10 +1,4 @@
 
-<h1 align="center">
-  <a href=""><img src="https://github.com/Bin-Cao/TCGPR/assets/86995074/b24118cc-8915-4dd6-8718-2b184ebdf273" alt="TCGPR" width="150"></a>
-  <br>
-  PyTcgpr
-  <br>
-</h1>
 
 
 🤝🤝🤝 Please star ⭐️ it for promoting open source projects 🌍 ! Thanks !
