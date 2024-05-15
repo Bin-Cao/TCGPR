@@ -9,30 +9,12 @@
 
 🤝🤝🤝 Please star ⭐️ it for promoting open source projects 🌍 ! Thanks !
 
-## If you are using this code, please cite:
-+ (**Patent**) Zhang Tong-yi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Tree-Classifier for Gaussian Process Regression. CN 115017977 A (2022.09.06), GitHub : github.com/Bin-Cao/TCGPR.
+## If you are using this code, please cite the repo:
++ under review (paper)
++ CAO, Bin (2024). Tree-Classifier for Gaussian process regression. Software. https://github.com/Bin-Cao/TCGPR.
 
 
-
-Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
-
-## Links
-+ https://www.shu.edu.cn/info/1055/321555.htm
-+ https://mp.weixin.qq.com/s/aZ9bZY1z_Bcd6Uepu7D3Mg
-+ https://mp.weixin.qq.com/s/ssj5kP-RfIpKRS6QjcLHTQ
-+ [user count](https://pypistats.org/packages/pytcgpr)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Bin-Cao/TCGPR&type=Date)](https://star-history.com/#Bin-Cao/TCGPR&Date)
-
-# TCGPR package 
-
-Tree-Classifier for Gaussian process regression 
-
-
-
-Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
+Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/) Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
 
 ## Algorithm Intro / 算法介绍
 
