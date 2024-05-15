@@ -26,7 +26,7 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
     Please feel free to open issues in the Github :
     https://github.com/Bin-Cao/TCGPR
     or 
-    contact Mr.Bin Cao (bcao@shu.edu.cn)
+    contact Mr.Bin Cao (binjacobcao@gmail.com)
     in case of any problems/comments/suggestions in using the code. 
     ==================================================================
 
@@ -253,7 +253,7 @@ def fit(filePath, Mission = 'DATA', Task = 'Partition', initial_set_cap=3, sampl
             print('The Outliers has been deleted !')
             print('='*100)
 
-    if Mission == 'FEATURE':
+    elif Mission == 'FEATURE':
         if up_search == None:
             up_search = 10
         if ratio == None:
