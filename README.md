@@ -5,7 +5,7 @@
 
 ## If you are using this code, please cite the repo:
 + under review (paper)
-+ CAO, Bin (2024). Tree-Classifier for Gaussian process regression. Software. https://github.com/Bin-Cao/TCGPR.
+
 
 
 Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/) Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
@@ -151,9 +151,6 @@ TCGPR.fit(
 ## output : 
 + [Dataset remained by TCGPR.csv]
 
-
-## applications 
-+ Wei, Q.&, Cao, B.&, Yuan, H.&, Chen, Y., You, K., Yu, S., ... & Zhang, T. Y. (2023). Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility. npj Computational Materials, 9(1), 201.
 
 
 ## About 
