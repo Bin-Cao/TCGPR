@@ -5,7 +5,7 @@
 
 ## If you are using this code, please cite the repo:
 + Processing (paper)
-
++ Patent : Zhang Tongyi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Authorized Chinese Pattern.  
 
 
 Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/) Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
