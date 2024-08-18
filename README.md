@@ -4,7 +4,7 @@
 🤝🤝🤝 Please star ⭐️ it for promoting open source projects 🌍 ! Thanks !
 
 ## If you are using this code, please cite follows:
-+ Processing (paper) : Tianliang Li, Bin Cao, Tianhao Su,..., Lingyan Feng*, Tongyi Zhang*. (Under review)
++ Processing (paper) : Tianliang Li&, Bin Cao&, Tianhao Su&,..., Lingyan Feng*, Tongyi Zhang*. (Under review)
 + Patent : Zhang Tongyi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Authorized Chinese Pattern.  
 
 
