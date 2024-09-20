@@ -5,7 +5,7 @@
 ## Citation
 If you use this code in your research, please cite the following:
 
-+ **Processing (paper):** Tianliang Li&, Bin Cao&, Tianhao Su&, ..., Lingyan Feng*, Tongyi Zhang*. (*Under review*)
++ **Processing (paper):** Tianliang Li&, Bin Cao&, Tianhao Su&, ..., Lingyan Feng*, Tongyi Zhang*. ( Small, *Under revision*)
 + **Patent:** Zhang Tongyi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Authorized Chinese Patent.
 
 ---
