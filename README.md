@@ -1,162 +1,193 @@
 
+# TCGPR: Targeted Correlation Guided Pattern Recognition
 
+🤝🤝🤝 **Please star ⭐️ this project to support open source efforts!** 🌍 Thank you!
 
-🤝🤝🤝 Please star ⭐️ it for promoting open source projects 🌍 ! Thanks !
+---
 
-## If you are using this code, please cite follows:
-+ Processing (paper) : Tianliang Li&, Bin Cao&, Tianhao Su&,..., Lingyan Feng*, Tongyi Zhang*. (Under review)
-+ Patent : Zhang Tongyi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Authorized Chinese Pattern.  
+## Citation
+If you use this code in your research, please cite the following:
 
++ **Processing (paper):** Tianliang Li&, Bin Cao&, Tianhao Su&, ..., Lingyan Feng*, Tongyi Zhang*. (*Under review*)
++ **Patent:** Zhang Tongyi, Cao Bin, Yuan Hao, Wei Qinghua, Dong Ziqiang. Authorized Chinese Patent.
 
-Source code : [![](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/) Written using Python, which is suitable for operating systems, e.g., Windows/Linux/MAC OS etc.
+---
 
-## Algorithm Intro / 算法介绍
+## Source Code
 
-See [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf)
+[![PyPI - TCGPR](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
 
-## Installing / 安装
-    pip install PyTcgpr 
+This Python-based library is compatible with Windows, Linux, and macOS operating systems.
 
-## Checking / 查看
-    pip show PyTcgpr 
-    
-## Updating / 更新
-    pip install --upgrade PyTcgpr
-## Structure / 结构
+---
 
-``` javascript
-PyTcgpr/
-    __init__.py
-    TCGPR.py
-    data/
-        OutliersIdentification.py
-        DatasetPartition.py
-    feature/
-        FeaturesSelection.py
-``` 
-## Running / 运行
+## Patent
 
-+ Data Screening module | Partition
-``` javascript
+![Patent Image](https://github.com/user-attachments/assets/32c40073-8a87-4c21-a178-15b2d51835f7)
+
+---
+
+## Algorithm Introduction
+
+For detailed algorithm information, refer to the [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf).
+
+---
+
+## Installation
+
+To install TCGPR, use pip:
+
+```bash
+pip install PyTcgpr
+```
+
+---
+
+## Checking Installation
+
+You can check the installation details with:
+
+```bash
+pip show PyTcgpr
+```
+
+---
+
+## Updating the Package
+
+Update TCGPR to the latest version using:
+
+```bash
+pip install --upgrade PyTcgpr
+```
+
+---
+
+## Running the Algorithm
+
+### 1. **Data Screening | Partition**
+
+```python
 from PyTcgpr import TCGPR
 dataSet = "data.csv"
 initial_set_cap = 3
-sampling_cap =2
+sampling_cap = 2
 up_search = 500
 CV = 'LOOCV'
 Task = 'Partition'
+
 TCGPR.fit(
-    filePath = dataSet, initial_set_cap = initial_set_cap,Task=Task, sampling_cap = sampling_cap,
-    up_search = up_search, CV=CV
-        )
-# note: default setting of Mission = 'DATA', No need to declare
+    filePath = dataSet, 
+    initial_set_cap = initial_set_cap, 
+    Task = Task, 
+    sampling_cap = sampling_cap,
+    up_search = up_search, 
+    CV = CV
+)
+# Note: Mission is set to 'DATA' by default. No need to declare it explicitly.
 ```
-+ Data Screening module | Identification
-``` javascript
+
+### 2. **Data Screening | Identification**
+
+```python
 from PyTcgpr import TCGPR
 dataSet = "data.csv"
-sampling_cap =2
+sampling_cap = 2
 up_search = 500
 Task = 'Identification'
 CV = 'LOOCV'
+
 TCGPR.fit(
-    filePath = dataSet, Task = Task, sampling_cap = sampling_cap,
-    up_search = up_search,CV=CV
-        )
-# note: default setting of Mission = 'DATA', No need to declare; initial_set_cap is masked 
+    filePath = dataSet, 
+    Task = Task, 
+    sampling_cap = sampling_cap,
+    up_search = up_search, 
+    CV = CV
+)
+# Note: 'Mission' is 'DATA' by default; no need to declare it. 'initial_set_cap' is masked in this case.
 ```
-+ Feature Selection module
-``` javascript
+
+### 3. **Feature Selection Module**
+
+```python
 from PyTcgpr import TCGPR
 dataSet = "data.csv"
-sampling_cap =2
+sampling_cap = 2
 Mission = 'FEATURE'
 up_search = 500
 CV = 'LOOCV'
+
 TCGPR.fit(
-    filePath = dataSet, Mission = 'FEATURE', initial_set_cap = initial_set_cap, sampling_cap = sampling_cap,
-    up_search = up_search,CV=CV
-        )
-# note: for feature selection, Mission should be declared as Mission = 'FEATURE' ! 
+    filePath = dataSet, 
+    Mission = Mission, 
+    sampling_cap = sampling_cap,
+    up_search = up_search, 
+    CV = CV
+)
+# Note: For feature selection, 'Mission' must be explicitly set to 'FEATURE'.
 ```
 
-## Parameters / 参数
-``` javascript
-    :param Mission : str, the mission of TCGPR, 
-        default Mission = 'DATA' for data screening. 
-        Mission = 'FEATURE' for feature selection.
+---
 
-    :param filePath: the input dataset in csv format
+## Parameters
 
-    :param initial_set_cap: 
-    for Mission = 'DATA':
-        if Task = 'Partition':
-        initial_set_cap : the capacity of the initial dataset
-        int, default = 3, recommend = 3-10
-        or a list : 
-        i.e.,  
-        [3,4,8], means the 4-th, 5-th, 9-th datum will be collected as the initial dataset
-        elif Task = 'Identification':
-        param initial_set_cap is masked 
-    for Mission = 'FEATURE':
-        initial_set_cap : the capacity of the initial featureset
-        int, default = 1, recommend = 1-5
-        or a list : i.e.,  
-        [3,4,8], means the 4-th, 5-th, 9-th feature will be selected as the initial characterize
+```python
+:param Mission: str, default='DATA'
+    The task to perform:
+    - 'DATA' for data screening
+    - 'FEATURE' for feature selection
 
-    :param sampling_cap: 
-    for Mission = 'DATA':
-        int, the number of data added to the updating dataset at each iteration, default = 1, recommend = 1-5
-    for Mission = 'FEATURE':
-        int, the number of features added to the updating feature set at each iteration, default = 1, recommend = 1-3
+:param filePath: str
+    Path to the input dataset in CSV format.
 
-    :param measure :Correlation criteria, default 'Pearson' means R values are used
-        or measure = 'Determination' means R^2 values are used
+:param initial_set_cap: int or list
+    Initial set capacity. For 'Partition' under 'DATA', defaults to 3.
+    Can also be a list specifying the indices of the initial set.
 
-    :param ratio: 
-    for Mission = 'DATA':
-        if Task = 'Partition':
-        tolerance, lower boundary of R is (1-ratio)Rmax, default = 0.2, recommend = 0~0.3
-        elif Task = 'Identification':
-        tolerance, lower boundary of R is (1+ratio)R[last], default = 0.0, recommend = -0.01~0.01
-    for Mission = 'FEATURE':
-        tolerance, lower boundary of R is (1+ratio)R[last], default = -0.01, recommend = -0.01~0.01
+:param sampling_cap: int, default=1
+    Number of data points or features added at each iteration.
 
-    :param target:
-    used in feature selection when Mission = 'FEATURE'
-        int, default 1, the number of target in regression mission
-        target = 1 for single_task regression and =k for k_task regression (Multiobjective regression)
-    otherwise : param target is masked 
-    
-    :param weight
-    a weight imposed on R value in calculating GGMF, default = .2 , recommend =  .1-1
-    i.e.,
-        weight * (1-R) +  mean / std (mean, std is the mean and standard deviation of length scales) 
+:param measure: str, default='Pearson'
+    Correlation criteria. Can be 'Pearson' (R values) or 'Determination' (R² values).
 
-    :param up_search: 
-    for Mission = 'DATA':
-        up boundary of candidates for brute force search, default = 5e2 , recommend =  2e2-2e3
-    for Mission = 'FEATURE':
-        up boundary of candidates for brute force search, default = 10 , recommend = 10-20
+:param ratio: float
+    Tolerance ratio for correlation. Varies based on the mission and task.
 
-    :param exploit_coef: constrains to the magnitude of variance in Cal_EI function, default = 2, recommend = 2
+:param target: int, default=1
+    Used in feature selection. Specifies the number of targets in regression tasks.
 
-    :param exploit_model: boolean, default, False
-        exploit_model == True, the searching direction will be R only! GGMF will not be used!
+:param weight: float, default=0.2
+    Weight factor for calculating the GGMF score.
 
-    :param CV: cross validation, default = 10
-        e.g. (int) CV = 5,10,... or str CV = 'LOOCV' for leave one out cross validation
+:param up_search: int, default=500
+    Upper boundary for brute-force search.
+
+:param exploit_coef: float, default=2
+    Constraint on the variance in the Cal_EI function.
+
+:param exploit_model: bool, default=False
+    If True, only R values will be used for the search (GGMF will not be considered).
+
+:param CV: int or str, default=10
+    Cross-validation setting. Can be an integer (e.g., 5, 10) or 'LOOCV' for leave-one-out cross-validation.
 ```
 
-## output : 
-+ [Dataset remained by TCGPR.csv]
+---
 
+## Output
 
+The algorithm will output a CSV file containing the processed dataset: `Dataset_remained_by_TCGPR.csv`.
 
-## About 
-Maintained by Bin Cao. Please feel free to open issues in the Github or contact Bin Cao
-(bcao686@connect.hkust-gz.edu.cn) in case of any problems/comments/suggestions in using the code. 
+---
 
+## Maintainers
 
-## Contributing / 共建
-Contribution and suggestions are always welcome. In addition, we are also looking for research collaborations. You can submit issues for suggestions, questions, bugs, and feature requests, or submit pull requests to contribute directly. You can also contact the authors for research collaboration.
+This project is maintained by **Bin Cao**. If you encounter any issues or have suggestions, feel free to open an issue on GitHub or contact:
+
+- **Email:** bcao686@connect.hkust-gz.edu.cn
+
+---
+
+## Contributing
+
+We welcome contributions and suggestions! You can submit issues for questions, bugs, and feature requests, or submit a pull request directly. We are also open to research collaborations—please get in touch if you're interested!
