@@ -1,9 +1,6 @@
 
-# TCGPR: Targeted Correlation Guided Pattern Recognition
+# TCGPR
 
-🤝🤝🤝 **Please star ⭐️ this project to support open source efforts!** 🌍 Thank you!
-
----
 
 ## Citation
 If you use this code in your research, please cite the following:
