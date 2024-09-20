@@ -20,9 +20,8 @@ This Python-based library is compatible with Windows, Linux, and macOS operating
 
 ## Patent
 
-![Patent Image](https://github.com/user-attachments/assets/32c40073-8a87-4c21-a178-15b2d51835f7)
+<img src="https://github.com/user-attachments/assets/32c40073-8a87-4c21-a178-15b2d51835f7" alt="Patent Image" width="400" />
 
----
 
 ## Algorithm Introduction
 
