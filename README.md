@@ -14,7 +14,7 @@ If you use this code in your research, please cite the following:
 
 - **2022**: I proposed TCGPR and developed the first version. In collaboration with experimental personnel Mr. Hao Yuan (元皓) and Mr. Qinghua Wei (魏清华), this method was successfully applied to lead solder optimization. Our first paper was published in *npj Computational Materials*. [News](https://mgi.shu.edu.cn/info/1063/3985.htm)  
 
-- **2024**: After two years of development, we introduced the sequential forward/backward feature selection methods and outlier detection techniques. In collaboration with experimental personnel Mr. Tianliang Li (李天亮) and computing personnel Mr. Tianhao Su (苏天昊), we successfully applied TCGPR to anti-tumor ferroptosis studies. The paper has been published in *SMALL*.  
+- **2024**: After two years of development, we introduced the sequential forward/backward feature selection methods and outlier detection techniques. In collaboration with experimental personnel Mr. Tianliang Li (李天亮) and computing personnel Mr. Tianhao Su (苏天昊), we successfully applied TCGPR to anti-tumor ferroptosis studies. The paper has been published in *SMALL*.  [News](https://www.shu.edu.cn/info/1055/363655.htm)
 
 ---
 
