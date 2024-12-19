@@ -5,7 +5,7 @@
 ## Citation
 If you use this code in your research, please cite the following:
 
-+ **Paper:** Machine Learning-Engineered Nanozyme System for Synergistic Anti-Tumor Ferroptosis/Apoptosis Therapy. Tianliang Li(李天亮)&, Bin Cao(曹斌)&, Tianhao Su(苏天昊)&, ..., Lingyan Feng^(冯凌燕), Tongyi Zhang^(张统一). ( [SMALL](https://onlinelibrary.wiley.com/doi/10.1002/smll.202408750))
++ **Paper:** Machine Learning-Engineered Nanozyme System for Synergistic Anti-Tumor Ferroptosis/Apoptosis Therapy. Tianliang Li(李天亮)&, Bin Cao(曹斌)&, Tianhao Su(苏天昊)&, ..., Lingyan Feng^(冯凌燕), Tongyi Zhang(张统一). ( [SMALL](https://onlinelibrary.wiley.com/doi/10.1002/smll.202408750))
 + **Paper:** Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility Qinghua Wei(魏清华)&, Bin Cao(曹斌)&, Hao Yuan (元皓)&, ..., Ziqiang Dong^(董自强), Tong-Yi Zhang^(张统一). （[NPJcm](https://www.nature.com/articles/s41524-023-01150-0)）
 + **Patent:** Zhang Tongyi (张统一), Cao Bin (曹斌), Yuan Hao, Wei Qinghua, Dong Ziqiang. Authorized Chinese Patent.
 
