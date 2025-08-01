@@ -1,65 +1,60 @@
 
+
 # TCGPR
 
-
-## Citation
-If you use this code in your research, please cite the following:
-
-+ **Paper:** Machine Learning-Engineered Nanozyme System for Synergistic Anti-Tumor Ferroptosis/Apoptosis Therapy. Tianliang Li(李天亮)&, Bin Cao(曹斌)&, Tianhao Su(苏天昊)&, ..., Lingyan Feng^(冯凌燕), Tongyi Zhang^(张统一). ( [SMALL](https://onlinelibrary.wiley.com/doi/10.1002/smll.202408750))
-+ **Paper:** Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility Qinghua Wei(魏清华)&, Bin Cao(曹斌)&, Hao Yuan (元皓)&, ..., Ziqiang Dong^(董自强), Tong-Yi Zhang^(张统一). （[NPJcm](https://www.nature.com/articles/s41524-023-01150-0)）
-+ **Patent:** Zhang Tongyi (张统一), Cao Bin (曹斌), Yuan Hao, Wei Qinghua, Dong Ziqiang. Authorized Chinese Patent.
-
-
-## History  
-
-- **2022**: I proposed TCGPR and developed the first version. In collaboration with Mr. Hao Yuan (元皓) (experimental) and Mr. Qinghua Wei (魏清华) (experimental), this method was successfully applied to lead solder optimization. Our first paper was published in *npj Computational Materials*. [News](https://mgi.shu.edu.cn/info/1063/3985.htm)  
-
-- **2024**: After two years of development, we introduced the sequential forward/backward feature selection methods and outlier detection techniques. In collaboration with Mr. Tianliang Li (李天亮) (experimental) and Mr. Tianhao Su (苏天昊) (computional), we successfully applied TCGPR to anti-tumor ferroptosis studies. The paper has been published in *SMALL*.  [News](https://www.shu.edu.cn/info/1055/363655.htm)
+A Python library for divide-and-conquer (TCGPR) - an efficient strategy tailored for small datasets in materials science and beyond.
 
 ---
 
-## Source Code
+## 📖 Citation
 
-[![PyPI - TCGPR](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
+If you use this code in your research, please cite the following papers:
 
-This Python-based library is compatible with Windows, Linux, and macOS operating systems.
+* **Li T., Cao B., Su T., ... Feng L., Zhang T.**
+  *Machine Learning-Engineered Nanozyme System for Synergistic Anti-Tumor Ferroptosis/Apoptosis Therapy*, **SMALL**
+  [Link to paper](https://onlinelibrary.wiley.com/doi/10.1002/smll.202408750)
 
----
-
-## Patent
-
-<img src="https://github.com/user-attachments/assets/32c40073-8a87-4c21-a178-15b2d51835f7" alt="Patent Image" width="400" />
-
-
-## Algorithm Introduction
-
-For detailed algorithm information, refer to the [Introduction](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf).
+* **Wei Q., Cao B., Yuan H., ... Dong Z., Zhang T.**
+  *Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility*, **npj Computational Materials**
+  [Link to paper](https://www.nature.com/articles/s41524-023-01150-0)
 
 ---
 
-## Installation
+## 📜 Project History
 
-To install TCGPR, use pip:
+* **2022**:
+  TCGPR was first proposed and implemented, in collaboration with Mr. Hao Yuan (experiments) and Mr. Qinghua Wei (experiments). It was successfully applied to the optimization of lead-free solder alloys.
+  → Published in *npj Computational Materials*
+  [News link](https://mgi.shu.edu.cn/info/1063/3985.htm)
+
+* **2024**:
+  After two years of development, TCGPR was enhanced with sequential feature selection and outlier detection. In collaboration with Mr. Tianliang Li (experiments) and Mr. Tianhao Su (computations), it was applied to anti-tumor ferroptosis studies.
+  → Published in *SMALL*
+  [News link](https://www.shu.edu.cn/info/1055/363655.htm)
+
+---
+
+## 🧠 Algorithm Overview
+
+For an in-depth explanation of the algorithm, see the [TCGPR Introduction PDF](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf).
+
+---
+
+## 🔧 Installation
+
+Install TCGPR via PyPI:
 
 ```bash
 pip install PyTcgpr
 ```
 
----
-
-## Checking Installation
-
-You can check the installation details with:
+To verify the installation:
 
 ```bash
 pip show PyTcgpr
 ```
 
----
-
-## Updating the Package
-
-Update TCGPR to the latest version using:
+To upgrade to the latest version:
 
 ```bash
 pip install --upgrade PyTcgpr
@@ -67,131 +62,133 @@ pip install --upgrade PyTcgpr
 
 ---
 
-## Running the Algorithm
+## 🚀 Getting Started
 
-### 1. **Data Screening | Partition**
+### 1. Data Screening | Partition Mode
 
 ```python
 from PyTcgpr import TCGPR
-dataSet = "data.csv"
-initial_set_cap = 3
-sampling_cap = 2
-up_search = 500
-CV = 'LOOCV'
-Task = 'Partition'
 
 TCGPR.fit(
-    filePath = dataSet, 
-    initial_set_cap = initial_set_cap, 
-    Task = Task, 
-    sampling_cap = sampling_cap,
-    up_search = up_search, 
-    CV = CV
+    filePath = "data.csv",
+    initial_set_cap = 3,
+    sampling_cap = 2,
+    up_search = 500,
+    CV = 'LOOCV',
+    Task = 'Partition'
 )
-# Note: Mission is set to 'DATA' by default. No need to declare it explicitly.
 ```
 
-### 2. **Data Screening | Identification**
+### 2. Data Screening | Identification Mode
 
 ```python
 from PyTcgpr import TCGPR
-dataSet = "data.csv"
-sampling_cap = 2
-up_search = 500
-Task = 'Identification'
-CV = 'LOOCV'
 
 TCGPR.fit(
-    filePath = dataSet, 
-    Task = Task, 
-    sampling_cap = sampling_cap,
-    up_search = up_search, 
-    CV = CV
+    filePath = "data.csv",
+    sampling_cap = 2,
+    up_search = 500,
+    CV = 'LOOCV',
+    Task = 'Identification'
 )
-# Note: 'Mission' is 'DATA' by default; no need to declare it. 'initial_set_cap' is masked in this case.
 ```
 
-### 3. **Feature Selection Module**
+### 3. Feature Selection Mode
 
 ```python
 from PyTcgpr import TCGPR
-dataSet = "data.csv"
-sampling_cap = 2
-Mission = 'FEATURE'
-up_search = 500
-CV = 'LOOCV'
 
 TCGPR.fit(
-    filePath = dataSet, 
-    Mission = Mission, 
-    sampling_cap = sampling_cap,
-    up_search = up_search, 
-    CV = CV
+    filePath = "data.csv",
+    Mission = 'FEATURE',
+    sampling_cap = 2,
+    up_search = 500,
+    CV = 'LOOCV'
 )
-# Note: For feature selection, 'Mission' must be explicitly set to 'FEATURE'.
 ```
 
 ---
 
-## Parameters
+## ⚙️ Parameters
 
 ```python
 :param Mission: str, default='DATA'
-    The task to perform:
-    - 'DATA' for data screening
-    - 'FEATURE' for feature selection
+    - 'DATA': Perform data screening
+    - 'FEATURE': Perform feature selection
 
 :param filePath: str
-    Path to the input dataset in CSV format.
+    Path to input dataset in CSV format
 
 :param initial_set_cap: int or list
-    Initial set capacity. For 'Partition' under 'DATA', defaults to 3.
-    Can also be a list specifying the indices of the initial set.
+    Initial subset size or index list for Partition mode
 
 :param sampling_cap: int, default=1
-    Number of data points or features added at each iteration.
+    Number of items selected per iteration
 
 :param measure: str, default='Pearson'
-    Correlation criteria. Can be 'Pearson' (R values) or 'Determination' (R² values).
+    Correlation type: 'Pearson' or 'Determination'
 
 :param ratio: float
-    Tolerance ratio for correlation. Varies based on the mission and task.
+    Tolerance threshold for correlation-based filtering
 
 :param target: int, default=1
-    Used in feature selection. Specifies the number of targets in regression tasks.
+    Number of targets in regression (for feature selection)
 
 :param weight: float, default=0.2
-    Weight factor for calculating the GGMF score.
+    Weight coefficient in GGMF score calculation
 
 :param up_search: int, default=500
-    Upper boundary for brute-force search.
+    Upper limit for search iterations
 
 :param exploit_coef: float, default=2
-    Constraint on the variance in the Cal_EI function.
+    Variance constraint for EI acquisition function
 
 :param exploit_model: bool, default=False
-    If True, only R values will be used for the search (GGMF will not be considered).
+    If True, disables GGMF and uses only R values
 
 :param CV: int or str, default=10
-    Cross-validation setting. Can be an integer (e.g., 5, 10) or 'LOOCV' for leave-one-out cross-validation.
+    Cross-validation: integer (e.g., 5, 10) or 'LOOCV'
 ```
 
 ---
 
-## Output
+## 📤 Output
 
-The algorithm will output a CSV file containing the processed dataset: `Dataset_remained_by_TCGPR.csv`.
+After running, TCGPR outputs a CSV file with the remaining samples:
 
----
-
-## Maintainers
-
-This project is maintained by **Bin Cao**. If you encounter any issues or have suggestions, feel free to open an issue on GitHub or contact:
-
-- **Email:** bcao686@connect.hkust-gz.edu.cn
+```bash
+Dataset_remained_by_TCGPR.csv
+```
 
 ---
 
-## Contributing
+## 📦 Source Code
 
-We welcome contributions and suggestions! You can submit issues for questions, bugs, and feature requests, or submit a pull request directly. We are also open to research collaborations—please get in touch if you're interested!
+[![PyPI - TCGPR](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
+
+Compatible with **Windows**, **Linux**, and **macOS**.
+
+---
+
+## 🧾 Patent
+
+<img src="https://github.com/user-attachments/assets/32c40073-8a87-4c21-a178-15b2d51835f7" alt="Patent Image" width="400" />
+
+---
+
+## 👨‍🔧 Maintainer
+
+Maintained by **Bin Cao**
+📧 **Email**: [bcao686@connect.hkust-gz.edu.cn](mailto:bcao686@connect.hkust-gz.edu.cn)
+Feel free to open an issue or contact me for any questions, bugs, or collaboration opportunities.
+
+---
+
+## 🤝 Contributing
+
+Contributions and suggestions are welcome!
+
+* Report bugs or request features via [GitHub Issues](https://github.com/Bin-Cao/TCGPR/issues)
+* Submit a pull request with improvements or fixes
+* Interested in research collaboration? Please get in touch!
+
