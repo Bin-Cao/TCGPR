@@ -158,7 +158,7 @@ TCGPR.fit(
 
 ---
 
-## 📤 Output
+## Output
 
 After running, TCGPR outputs a CSV file with the remaining samples:
 
