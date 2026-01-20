@@ -184,7 +184,7 @@ Compatible with **Windows**, **Linux**, and **macOS**.
 
 ## Developer
 
-Maintained by **Bin Cao**
+Developed by **Bin Cao**
 **Email**: [bcao686@connect.hkust-gz.edu.cn](mailto:bcao686@connect.hkust-gz.edu.cn)
 Feel free to open an issue or contact me for any questions, bugs, or collaboration opportunities.
 
