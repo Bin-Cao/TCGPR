@@ -24,41 +24,29 @@ A Python library for divide-and-conquer (TCGPR) - an efficient strategy tailored
 
 ---
 
-## 📖 Citation
 
-If you use this code in your research, please cite the following papers:
 
-* **Li T., Cao B., Su T., ... Feng L., Zhang T.**
-  *Machine Learning-Engineered Nanozyme System for Synergistic Anti-Tumor Ferroptosis/Apoptosis Therapy*, **SMALL**
-  [Link to paper](https://onlinelibrary.wiley.com/doi/10.1002/smll.202408750)
-
-* **Wei Q., Cao B., Yuan H., ... Dong Z., Zhang T.**
-  *Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility*, **npj Computational Materials**
-  [Link to paper](https://www.nature.com/articles/s41524-023-01150-0)
-
----
-
-## 📜 Project History
+## Project History
 
 * **2022**:
-  TCGPR was first proposed and implemented, in collaboration with Mr. Hao Yuan (experiments) and Mr. Qinghua Wei (experiments). It was successfully applied to the optimization of lead-free solder alloys.
+  TCGPR was first proposed and implemented, in collaboration with Mr. Hao Yuan (experiments cooperator) and Mr. Qinghua Wei (experiments cooperator). It was successfully applied to the optimization of lead-free solder alloys.
   → Published in *npj Computational Materials*
   [News link](https://mgi.shu.edu.cn/info/1063/3985.htm)
 
 * **2024**:
-  After two years of development, TCGPR was enhanced with sequential feature selection and outlier detection. In collaboration with Mr. Tianliang Li (experiments) and Mr. Tianhao Su (computations), it was applied to anti-tumor ferroptosis studies.
+  After two years of development, TCGPR was enhanced with sequential feature selection and outlier detection. In collaboration with Mr. Tianliang Li (experiments cooperator) and Mr. Tianhao Su (computations cooperator), it was applied to anti-tumor ferroptosis studies.
   → Published in *SMALL*
   [News link](https://www.shu.edu.cn/info/1055/363655.htm)
 
 ---
 
-## 🧠 Algorithm Overview
+## Algorithm Overview
 
 For an in-depth explanation of the algorithm, see the [TCGPR Introduction PDF](https://github.com/Bin-Cao/TCGPR/blob/main/Intro/TCGPR.pdf).
 
 ---
 
-## 🔧 Installation
+## Installation
 
 Install TCGPR via PyPI:
 
@@ -80,7 +68,7 @@ pip install --upgrade PyTcgpr
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Data Screening | Partition Mode
 
@@ -127,7 +115,7 @@ TCGPR.fit(
 
 ---
 
-## ⚙️ Parameters
+## Main Parameters
 
 ```python
 :param Mission: str, default='DATA'
@@ -180,7 +168,7 @@ Dataset_remained_by_TCGPR.csv
 
 ---
 
-## 📦 Source Code
+## Source Code
 
 [![PyPI - TCGPR](https://img.shields.io/badge/PyPI-caobin-blue)](https://pypi.org/project/PyTcgpr/)
 
@@ -188,25 +176,39 @@ Compatible with **Windows**, **Linux**, and **macOS**.
 
 ---
 
-## 🧾 Patent
+## Patent
 
 <img src="https://github.com/user-attachments/assets/32c40073-8a87-4c21-a178-15b2d51835f7" alt="Patent Image" width="400" />
 
 ---
 
-## 👨‍🔧 Maintainer
+## Developer
 
 Maintained by **Bin Cao**
-📧 **Email**: [bcao686@connect.hkust-gz.edu.cn](mailto:bcao686@connect.hkust-gz.edu.cn)
+**Email**: [bcao686@connect.hkust-gz.edu.cn](mailto:bcao686@connect.hkust-gz.edu.cn)
 Feel free to open an issue or contact me for any questions, bugs, or collaboration opportunities.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions and suggestions are welcome!
 
 * Report bugs or request features via [GitHub Issues](https://github.com/Bin-Cao/TCGPR/issues)
 * Submit a pull request with improvements or fixes
 * Interested in research collaboration? Please get in touch!
+
+---
+
+## Citation
+
+If you use this code in your research, please cite the following papers:
+
+* **Li T., Cao B., Su T., ... Feng L., Zhang T.**
+  *Machine Learning-Engineered Nanozyme System for Synergistic Anti-Tumor Ferroptosis/Apoptosis Therapy*, **SMALL**
+  [Link to paper](https://onlinelibrary.wiley.com/doi/10.1002/smll.202408750)
+
+* **Wei Q., Cao B., Yuan H., ... Dong Z., Zhang T.**
+  *Divide and conquer: Machine learning accelerated design of lead-free solder alloys with high strength and high ductility*, **npj Computational Materials**
+  [Link to paper](https://www.nature.com/articles/s41524-023-01150-0)
 
