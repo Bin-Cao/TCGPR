@@ -29,7 +29,7 @@ A Python library for divide-and-conquer (TCGPR) - an efficient strategy tailored
 ## Project History
 
 * **2022**:
-  TCGPR was first proposed and implemented, in collaboration with Mr. Hao Yuan (experiments cooperator) and Mr. Qinghua Wei (experiments cooperator). It was successfully applied to the optimization of lead-free solder alloys.
+  TCGPR was first proposed and implemented. In collaboration with Mr. Hao Yuan (experiments cooperator) and Mr. Qinghua Wei (experiments cooperator) at 2023, it was successfully applied to the optimization of lead-free solder alloys.
   → Published in *npj Computational Materials*
   [News link](https://mgi.shu.edu.cn/info/1063/3985.htm)
 
